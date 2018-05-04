@@ -22,7 +22,17 @@ def main():
     while True:
         # Create base news feed stocker list
         getStockList()
+        createSymbolList()
         timer()
+
+
+def createSymbolList():
+    try:
+        symbolList = open("symbols.txt").readlines()
+        return symbolList
+    except:
+        print("Error reading file, try again later")
+        sys.exit()
 
 
 def timer():
@@ -35,21 +45,17 @@ def timer():
 def getStockList():
     # Check to see if file exists
     if os.path.isfile(SYMBOLS_PATH):
-        print(os.path.getmtime(SYMBOLS_PATH))
-        print(time.time())
-        print(time.time() - os.path.getmtime(SYMBOLS_PATH))
-        print(THIRTY_MINUTES)
         # Check if time elapsed since symbols.py modification is +30 mins
         if time.time() - os.path.getmtime(SYMBOLS_PATH) > THIRTY_MINUTES:
             # Update List
-            createStockList()
+            createStockTxt()
             print("made new stock list")
     else:
         #Create List
-        createStockList()
+        createStockTxt()
 
         
-def createStockList():
+def createStockTxt():
     # Create new symbol.txt, w allows overwrite
     symFile = open(SYMBOLS_PATH, "w")
     symbols = getApiJson()
@@ -57,10 +63,10 @@ def createStockList():
     for i, ticker in enumerate(symbols):
         # Kept two writes on seperate lines instead of (ticker['symbol'] + /n)
         # which would create a new string in mem each time.
-        symFile.write(ticker['symbol'])
+        print(ticker['symbol'], file=symFile)
         # Avoid empty space at end of symbols.txt
-        if i < len(symbols) - 1:
-            symFile.write("\n")
+        # if i < len(symbols) - 1:
+        #     symFile.write("\n")
 
 
 def getApiJson(url=LIST_BUILDER):
