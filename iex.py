@@ -14,12 +14,22 @@ NEWS_LEAD = 'https://api.iextrading.com/1.0/stock/'
 NEWS_TAIL = '/news'
 SYMBOLS_PATH = 'symbols.txt'
 THIRTY_MINUTES = 30 * 60
-
+START_TIME = time.time()
 
 def main():
-    # Create base news feed stocker list
-    getStockList()
-    return 0
+    # Lock time loop to the system clock.
+    
+    while True:
+        # Create base news feed stocker list
+        getStockList()
+        timer()
+
+
+def timer():
+    # - STATR_TIME to avoid drift after multiple iterations. An individual iteration may start slightly 
+    # sooner or later depending on sleep(), timer() precision and how long it takes to execute 
+    # the loop body but on average iterations always occur on the interval boundaries (even if some are skipped).
+    time.sleep(30.0 -((time.time() - START_TIME) % 30.0))
 
 
 def getStockList():
