@@ -13,7 +13,7 @@ LIST_BUILDER = 'https://api.iextrading.com/1.0/ref-data/symbols'
 NEWS_LEAD = 'https://api.iextrading.com/1.0/stock/'
 NEWS_TAIL = '/news'
 SYMBOLS_PATH = 'symbols.txt'
-THIRTY_MINUTES = 30 * 60 * 1000
+THIRTY_MINUTES = 30 * 60
 
 
 def main():
@@ -25,6 +25,10 @@ def main():
 def getStockList():
     # Check to see if file exists
     if os.path.isfile(SYMBOLS_PATH):
+        print(os.path.getmtime(SYMBOLS_PATH))
+        print(time.time())
+        print(time.time() - os.path.getmtime(SYMBOLS_PATH))
+        print(THIRTY_MINUTES)
         # Check if time elapsed since symbols.py modification is +30 mins
         if time.time() - os.path.getmtime(SYMBOLS_PATH) > THIRTY_MINUTES:
             # Update List
