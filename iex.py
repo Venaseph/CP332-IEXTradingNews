@@ -40,11 +40,12 @@ def createStockList():
     symFile = open(SYMBOLS_PATH, "w")
     symbols = getApiJson()
     # iterate through each dictonary to grab symbol and append to symbols.txt
-    for ticker in symbols:
+    for i, ticker in enumerate(symbols):
         # Kept two writes on seperate lines instead of (ticker['symbol'] + /n)
         # which would create a new string in mem each time.
-        symFile.write("\n")
         symFile.write(ticker['symbol'])
+        if i < len(symbols) - 1:
+            symFile.write("\n")
 
 
 def getApiJson(url=LIST_BUILDER):
