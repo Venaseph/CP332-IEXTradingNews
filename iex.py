@@ -16,21 +16,29 @@ SYMBOLS_PATH = 'symbols.txt'
 THIRTY_MINUTES = 30 * 60
 START_TIME = time.time()
 
+# Global Non-Static
+symbolList = None
+
 def main():
     # Lock time loop to the system clock.
     
     while True:
         # Create base news feed stocker list
         getStockList()
-        symbolList = createSymbolList()
-        print(symbolList)
+        getNews()
         timer()
 
 
+def getNews():
+    for symbol in symbolList:
+        print(symbol)
+
 def createSymbolList():
+    global symbolList
     # Create list from symbols.txt
     with open(SYMBOLS_PATH, 'r') as content:
-        symbolList = content.readlines()
+        # read().splitlines() so it removes the \n
+        symbolList = content.read().splitlines()
     return symbolList
 
 
@@ -41,10 +49,12 @@ def getStockList():
         if time.time() - os.path.getmtime(SYMBOLS_PATH) > THIRTY_MINUTES:
             # Update List
             createStockTxt()
+            createSymbolList()
             # print("Made new stock list")
     else:
         #Create List
         createStockTxt()
+        createSymbolList()
 
         
 def createStockTxt():
