@@ -19,11 +19,12 @@ START_TIME = time.time()
 # Global Non-Static
 symbolList = None
 
+
 def main():
     # Lock time loop to the system clock.
     
     while True:
-        # Create base news feed stocker list
+        # Create base news feed stocker list, or update .txt & list when needed.
         getStockList()
         getNews()
         timer()
@@ -32,6 +33,7 @@ def main():
 def getNews():
     for symbol in symbolList:
         print(symbol)
+
 
 def createSymbolList():
     global symbolList
@@ -47,12 +49,12 @@ def getStockList():
     if os.path.isfile(SYMBOLS_PATH):
         # Check if time elapsed since symbols.py modification is +30 mins
         if time.time() - os.path.getmtime(SYMBOLS_PATH) > THIRTY_MINUTES:
-            # Update List
+            # Update List/.txt
             createStockTxt()
             createSymbolList()
             # print("Made new stock list")
     else:
-        #Create List
+        #Create List/.txt
         createStockTxt()
         createSymbolList()
 
