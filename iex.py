@@ -44,6 +44,7 @@ def createStockList():
         # Kept two writes on seperate lines instead of (ticker['symbol'] + /n)
         # which would create a new string in mem each time.
         symFile.write(ticker['symbol'])
+        # Avoid empty space at end of symbols.txt
         if i < len(symbols) - 1:
             symFile.write("\n")
 
