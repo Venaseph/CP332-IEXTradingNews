@@ -22,24 +22,15 @@ def main():
     while True:
         # Create base news feed stocker list
         getStockList()
-        createSymbolList()
+        symbolList = createSymbolList()
+        print(symbolList)
         timer()
 
 
 def createSymbolList():
-    try:
-        symbolList = open("symbols.txt").readlines()
-        return symbolList
-    except:
-        print("Error reading file, try again later")
-        sys.exit()
-
-
-def timer():
-    # - STATR_TIME to avoid drift after multiple iterations. An individual iteration may start slightly 
-    # sooner or later depending on sleep(), timer() precision and how long it takes to execute 
-    # the loop body but on average iterations always occur on the interval boundaries (even if some are skipped).
-    time.sleep(30.0 -((time.time() - START_TIME) % 30.0))
+    # Create list from symbols.txt
+    symbolList = open("symbols.txt").readlines()
+    return symbolList
 
 
 def getStockList():
@@ -49,7 +40,7 @@ def getStockList():
         if time.time() - os.path.getmtime(SYMBOLS_PATH) > THIRTY_MINUTES:
             # Update List
             createStockTxt()
-            print("made new stock list")
+            print("Made new stock list")
     else:
         #Create List
         createStockTxt()
@@ -63,20 +54,34 @@ def createStockTxt():
     for i, ticker in enumerate(symbols):
         # Kept two writes on seperate lines instead of (ticker['symbol'] + /n)
         # which would create a new string in mem each time.
-        print(ticker['symbol'], file=symFile)
+        symFile.write(ticker['symbol'])
         # Avoid empty space at end of symbols.txt
-        # if i < len(symbols) - 1:
-        #     symFile.write("\n")
+        if i < len(symbols) - 1:
+            symFile.write("\n")
 
 
 def getApiJson(url=LIST_BUILDER):
-    fob = urllib.request.urlopen(url)
-    # Set fob as utf-8
-    data = fob.read().decode('utf-8')
-    # Decode Json
-    decoded = json.loads(data)
-    return decoded
+    try:
+        fob = urllib.request.urlopen(url)
+        # Set fob as utf-8
+        data = fob.read().decode('utf-8')
+        # Decode Json
+        decoded = json.loads(data)
+        return decoded
+    except Exception as ex:
+        errorPrint(ex)
 
+
+def errorPrint(ex):
+    print("Error: ", ex)
+    sys.exit()
+
+
+def timer():
+    # - START_TIME to avoid drift after multiple iterations. An individual iteration may start slightly 
+    # sooner or later depending on sleep(), timer() precision and how long it takes to execute 
+    # the loop body but on average iterations always occur on the interval boundaries (even if some are skipped).
+    time.sleep(30.0 -((time.time() - START_TIME) % 30.0))
 
 if __name__ == "__main__":
     sys.exit(main())
