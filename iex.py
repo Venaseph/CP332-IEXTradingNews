@@ -8,11 +8,11 @@ import datetime
 import time
 
 
-# Global Static Variables for calls:
+# Global Static Variables:
 LIST_BUILDER = 'https://api.iextrading.com/1.0/ref-data/symbols'
 NEWS_LEAD = 'https://api.iextrading.com/1.0/stock/'
 NEWS_TAIL = '/news'
-SYMBOLS_PATH = './symbols.txt'
+SYMBOLS_PATH = 'symbols.txt'
 THIRTY_MINUTES = 30 * 60 * 1000
 
 
@@ -26,7 +26,7 @@ def getStockList():
     # Check to see if file exists
     if os.path.isfile(SYMBOLS_PATH):
         # Check if time elapsed since symbols.py modification is +30 mins
-        if time.time() - os.path.getmtime(SYMBOLS_PATH) < THIRTY_MINUTES:
+        if time.time() - os.path.getmtime(SYMBOLS_PATH) > THIRTY_MINUTES:
             # Update List
             createStockList()
             print("made new stock list")
@@ -37,7 +37,7 @@ def getStockList():
         
 def createStockList():
     # Create new symbol.txt, w allows overwrite
-    symFile = open("symbols.txt", "w")
+    symFile = open(SYMBOLS_PATH, "w")
     symbols = getApiJson()
     # iterate through each dictonary to grab symbol and append to symbols.txt
     for ticker in symbols:
