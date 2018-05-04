@@ -29,7 +29,8 @@ def main():
 
 def createSymbolList():
     # Create list from symbols.txt
-    symbolList = open("symbols.txt").readlines()
+    with open(SYMBOLS_PATH, 'r') as content:
+        symbolList = content.readlines()
     return symbolList
 
 
@@ -40,7 +41,7 @@ def getStockList():
         if time.time() - os.path.getmtime(SYMBOLS_PATH) > THIRTY_MINUTES:
             # Update List
             createStockTxt()
-            print("Made new stock list")
+            # print("Made new stock list")
     else:
         #Create List
         createStockTxt()
@@ -48,16 +49,17 @@ def getStockList():
         
 def createStockTxt():
     # Create new symbol.txt, w allows overwrite
-    symFile = open(SYMBOLS_PATH, "w")
-    symbols = getApiJson()
-    # iterate through each dictonary to grab symbol and append to symbols.txt
-    for i, ticker in enumerate(symbols):
-        # Kept two writes on seperate lines instead of (ticker['symbol'] + /n)
-        # which would create a new string in mem each time.
-        symFile.write(ticker['symbol'])
-        # Avoid empty space at end of symbols.txt
-        if i < len(symbols) - 1:
-            symFile.write("\n")
+    with open(SYMBOLS_PATH, 'w') as content:
+        #get decoded json
+        symbols = getApiJson()
+        # iterate through each dictonary to grab symbol and append to symbols.txt
+        for i, ticker in enumerate(symbols):
+            # Kept two writes on seperate lines instead of (ticker['symbol'] + /n)
+            # which would create a new string in mem each time.
+            content.write(ticker['symbol'])
+            # Avoid empty space at end of symbols.txt
+            if i < len(symbols) - 1:
+                content.write("\n")
 
 
 def getApiJson(url=LIST_BUILDER):
@@ -81,7 +83,7 @@ def timer():
     # - START_TIME to avoid drift after multiple iterations. An individual iteration may start slightly 
     # sooner or later depending on sleep(), timer() precision and how long it takes to execute 
     # the loop body but on average iterations always occur on the interval boundaries (even if some are skipped).
-    time.sleep(30.0 -((time.time() - START_TIME) % 30.0))
+    time.sleep(30.0 - ((time.time() - START_TIME) % 30.0))
 
 if __name__ == "__main__":
     sys.exit(main())
