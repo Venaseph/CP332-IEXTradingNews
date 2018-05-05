@@ -38,9 +38,18 @@ def printStoreNews(updates):
 def printNews(value):
     print("========= [" + value['datetime'] + "] =========")
     print(value['source'] + ": " + value['headline'])
-    print(value['url'])
+    print(getFinalUrl(value['url']))
     print("Tags: " + value['related'])
     print("")
+
+
+def getFinalUrl(url):
+    try:
+        res = urllib.request.urlopen(url)
+        finalUrl = res.geturl()
+        return finalUrl
+    except Exception as ex:
+        return "Link unavailable: " + str(ex)
 
 
 def updateNewsList(key, value):
