@@ -6,7 +6,6 @@ import urllib.request
 import os
 import datetime
 import time
-import re
 
 
 # Global Static Variables:
@@ -22,10 +21,8 @@ newsList = {}
 
 
 def main():
-    # Lock time loop to the system clock.
     
     while True:
-        # Create base news feed stocker list, or update .txt & list when needed.
         getStockList()
         updates = getUpdatedNews()
         printStoreNews(updates)
@@ -39,7 +36,10 @@ def printStoreNews(updates):
 
 
 def printNews(value):
-    print(value['headline'])
+    print("========= [" + value['datetime'] + "] =========")
+    print(value['source'] + ": " + value['headline'])
+    print(value['url'])
+    print("Tags: " + value['related'])
     print("")
 
 
@@ -73,7 +73,7 @@ def getStockList():
             # Update List/.txt
             createStockTxt()
             createSymbolList()
-            print("Made new stock list")
+            #print("Made new stock list")
     else:
         #Create List/.txt
         createStockTxt()
@@ -113,11 +113,11 @@ def errorPrint(ex):
 
 
 def timer():
-    # - START_TIME to avoid drift after multiple iterations. An individual iteration may start slightly 
+    # To avoid drift after multiple iterations. Individual iteration may start slightly 
     # sooner or later depending on sleep(), timer() precision and how long it takes to execute 
     # the loop body but on average iterations always occur on the interval boundaries (even if some are skipped).
     time.sleep(30.0 - ((time.time() - START_TIME) % 30.0))
-    print("running now")
+    # print("running now")
 
 if __name__ == "__main__":
     sys.exit(main())
