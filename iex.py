@@ -41,7 +41,7 @@ def getUpdatedNews():
     news = getApiJson(NEWS_API)
     # {key:val for val in collection}
     # TODO shorten key
-    updates.update({article['url']: None for article in news if article['url'] not in newsList})
+    updates.update({article['url']: article for article in news if article['url'] not in newsList})
     
     return updates
             
