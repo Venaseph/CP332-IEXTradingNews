@@ -6,6 +6,7 @@ import urllib.request
 import os
 import datetime
 import time
+import re
 
 
 # Global Static Variables:
@@ -52,7 +53,7 @@ def getUpdatedNews():
     news = getApiJson(NEWS_API)
     # {key:val for val in collection}
     # TODO shorten key
-    updates.update({article['url']: article for article in news if article['url'] not in newsList for symbol in symbolList if symbol in article['related']})
+    updates.update({article['url']: article for article in news if article['url'] not in newsList for symbol in symbolList if ("," + symbol + ",") in article['related']})
     return updates
             
 
@@ -116,6 +117,7 @@ def timer():
     # sooner or later depending on sleep(), timer() precision and how long it takes to execute 
     # the loop body but on average iterations always occur on the interval boundaries (even if some are skipped).
     time.sleep(30.0 - ((time.time() - START_TIME) % 30.0))
+    print("running now")
 
 if __name__ == "__main__":
     sys.exit(main())
