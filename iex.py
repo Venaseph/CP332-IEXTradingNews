@@ -10,14 +10,14 @@ import time
 
 # Global Static Variables:
 LIST_BUILDER = 'https://api.iextrading.com/1.0/ref-data/symbols'
-NEWS_LEAD = 'https://api.iextrading.com/1.0/stock/'
-NEWS_TAIL = '/news'
+NEWS_API = 'https://api.iextrading.com/1.0/stock/market/news/last/100'
 SYMBOLS_PATH = 'symbols.txt'
 THIRTY_MINUTES = 30 * 60
 START_TIME = time.time()
 
 # Global Non-Static
 symbolList = None
+newsList = {}
 
 
 def main():
@@ -26,14 +26,25 @@ def main():
     while True:
         # Create base news feed stocker list, or update .txt & list when needed.
         getStockList()
-        getNews()
+        updates = getUpdatedNews()
+        printNewsUpdates(updates)
         timer()
 
 
-def getNews():
-    for symbol in symbolList:
-        print(symbol)
+def printNewsUpdates(updates):
+    print("")
 
+
+def getUpdatedNews():
+    global newsList
+    updates = {}
+    news = getApiJson(NEWS_API)
+    # {key:val for val in collection}
+    # TODO shorten key
+    updates.update({article['url']: None for article in news if article['url'] not in newsList})
+    
+    return updates
+            
 
 def createSymbolList():
     global symbolList
@@ -41,18 +52,17 @@ def createSymbolList():
     with open(SYMBOLS_PATH, 'r') as content:
         # read().splitlines() so it removes the \n
         symbolList = content.read().splitlines()
-    return symbolList
 
 
 def getStockList():
     # Check to see if file exists
     if os.path.isfile(SYMBOLS_PATH):
-        # Check if time elapsed since symbols.py modification is +30 mins
-        if time.time() - os.path.getmtime(SYMBOLS_PATH) > THIRTY_MINUTES:
+        # Check if time elapsed since symbols.py modification is +30 mins or symbolList isn't populated
+        if (time.time() - os.path.getmtime(SYMBOLS_PATH) > THIRTY_MINUTES or symbolList == None):
             # Update List/.txt
             createStockTxt()
             createSymbolList()
-            # print("Made new stock list")
+            print("Made new stock list")
     else:
         #Create List/.txt
         createStockTxt()
@@ -68,10 +78,11 @@ def createStockTxt():
         for i, ticker in enumerate(symbols):
             # Kept two writes on seperate lines instead of (ticker['symbol'] + /n)
             # which would create a new string in mem each time.
-            content.write(ticker['symbol'])
-            # Avoid empty space at end of symbols.txt
-            if i < len(symbols) - 1:
-                content.write("\n")
+            if "#" not in ticker['symbol']:
+                content.write(ticker['symbol'])
+                # Avoid empty space at end of symbols.txt
+                if i < len(symbols) - 1:
+                    content.write("\n")
 
 
 def getApiJson(url=LIST_BUILDER):
@@ -88,7 +99,6 @@ def getApiJson(url=LIST_BUILDER):
 
 def errorPrint(ex):
     print("Error: ", ex)
-    sys.exit()
 
 
 def timer():
