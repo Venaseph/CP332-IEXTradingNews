@@ -27,17 +27,27 @@ def main():
         # Create base news feed stocker list, or update .txt & list when needed.
         getStockList()
         updates = getUpdatedNews()
-        printNewsUpdates(updates)
+        printStoreNews(updates)
         timer()
 
 
-def printNewsUpdates(updates):
-    for i in updates:
-        print(i)
+def printStoreNews(updates):
+    for key, value in updates.items():
+        updateNewsList(key, value)
+        printNews(value)
 
+
+def printNews(value):
+    print(value['headline'])
+    print("")
+
+
+def updateNewsList(key, value):
+    global newsList
+    # Key is URL
+    newsList.update({key: value['headline']})
 
 def getUpdatedNews():
-    global newsList
     updates = {}
     news = getApiJson(NEWS_API)
     # {key:val for val in collection}
