@@ -32,7 +32,8 @@ def main():
 
 
 def printNewsUpdates(updates):
-    print("")
+    for i in updates:
+        print(i)
 
 
 def getUpdatedNews():
@@ -41,8 +42,7 @@ def getUpdatedNews():
     news = getApiJson(NEWS_API)
     # {key:val for val in collection}
     # TODO shorten key
-    updates.update({article['url']: article for article in news if article['url'] not in newsList})
-    
+    updates.update({article['url']: article for article in news if article['url'] not in newsList for symbol in symbolList if symbol in article['related']})
     return updates
             
 
