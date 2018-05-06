@@ -49,7 +49,7 @@ def readableTime(ts):
         # Make strptime obj from string minus the crap at the end
         strpTime = datetime.datetime.strptime(ts[:-6], format)
         # Create string of the pieces I want from obj
-        convertedTime = strpTime.strftime("%B %d %Y, %I:%m %p")
+        convertedTime = strpTime.strftime("%B %d %Y, %-I:%m %p")
         return convertedTime
     except Exception as ex:
         return "Datetime not available: " + str(ex)
