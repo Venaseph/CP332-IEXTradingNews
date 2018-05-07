@@ -6,7 +6,6 @@ import urllib.request
 import os
 import datetime
 import time
-from collections import deque
 
 
 # Global Static:
@@ -155,6 +154,7 @@ def timer():
     # the loop body but on average iterations always occur on the interval boundaries (even if some are skipped).
     time.sleep(30.0 - ((time.time() - START_TIME) % 30.0))
     # print("running now")
+
 
 if __name__ == "__main__":
     sys.exit(main())
