@@ -89,8 +89,8 @@ def getUpdatedNews():
     updates = {}
     news = getApiJson(NEWS_API)
     # {key:val for val in collection}
-    # TODO shorten key
-    updates.update({article['url']: article for article in news if article['url'] not in newsList for symbol in symbolList if ("," + symbol + ",") in article['related']})
+    # TODO shorten key / If not already accounted for and conatins one of the tickers, add it
+    updates.update({article['url']: article for article in news if article['url'] not in newsList for symbol in symbolList if ("," + symbol + "," or symbol + "," or "," + symbol) in article['related']})
     return updates
             
 
