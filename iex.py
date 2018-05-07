@@ -70,6 +70,7 @@ def readableTime(ts):
     except Exception as ex:
         return "Datetime not available: " + str(ex)
 
+
 def getFinalUrl(url):
     try:
         res = urllib.request.urlopen(url)
@@ -83,6 +84,7 @@ def updateNewsList(key, value):
     global newsList
     # Key is URL
     newsList.update({key: value['headline']})
+
 
 def getUpdatedNews():
     updates = {}
