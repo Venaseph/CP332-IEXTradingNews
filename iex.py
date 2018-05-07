@@ -6,9 +6,10 @@ import urllib.request
 import os
 import datetime
 import time
+from collections import deque
 
 
-# Global Static Variables:
+# Global Static:
 LIST_BUILDER = 'https://api.iextrading.com/1.0/ref-data/symbols'
 NEWS_API = 'https://api.iextrading.com/1.0/stock/market/news/last/100'
 SYMBOLS_PATH = 'symbols.txt'
@@ -30,9 +31,25 @@ def main():
 
 
 def printStoreNews(updates):
+    # added in handling to reverse intake order on the news so it prints cronologically
+    reversedList = reverseNewsList(updates)
+
+    # Print reversed News List
+    for value in reversedList:
+        printNews(value)
+
+    # Store variables
     for key, value in updates.items():
         updateNewsList(key, value)
-        printNews(value)
+        
+
+def reverseNewsList(updates):
+    reversedList = []
+    for key, value in updates.items():
+        #insert next at start of list
+        reversedList.insert(0, value)
+    return reversedList
+
 
 def printNews(value):
     print("========= [" + readableTime(value['datetime']) + "] =========")
