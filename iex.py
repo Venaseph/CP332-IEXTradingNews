@@ -73,7 +73,9 @@ def readableTime(ts):
 
 def getFinalUrl(url):
     try:
+        # Open URL as res
         res = urllib.request.urlopen(url)
+        # Grab landing URL
         finalUrl = res.geturl()
         return finalUrl
     except Exception as ex:
