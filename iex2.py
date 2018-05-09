@@ -9,7 +9,7 @@ import datetime
 # Global Static
 SYMBOLS_PATH = 'symbols.txt'
 APIGET_START = 'https://api.iextrading.com/1.0/stock/'
-APIGET_END = '/news/last/5'
+APIGET_END = '/news/last/10'
 START_TIME = time.time()
 format = "%Y-%m-%dT%H:%M:%S"
 
@@ -23,6 +23,7 @@ def main():
     while True:
         createSymbolList()
         updates = getUpdatedNews()
+        # Only run if there are new articles
         if updates is not None:
             updates = sortArticles(updates)
             printStoreNews(updates)
@@ -63,6 +64,7 @@ def getApiJson(url):
         
 
 def getFinalUrl(url):
+    #short of installing a library to handle the headers, this is what I managed to come up with
     try:
         # Open URL as res
         res = urllib.request.urlopen(url)
@@ -75,26 +77,27 @@ def getFinalUrl(url):
 
 def getUpdatedNews():
     global newsList
+    # Set to none for no update handling
     updates = None
+
     for symbol in symbolList:      
         news = getApiJson(APIGET_START + symbol + APIGET_END)
-        # {key:val for val in collection}
-        # TODO shorten key / If not already accounted for and conatins one of the tickers, add it
+        # Dumps articles that have yet to be printed into the updates list
         updates = [article for article in news if article['url'] not in newsList]
+        # TODO shorten key / This updates the has been printed dic, went dic for speed
         newsList.update({article['url']: None for article in news if article['url'] not in newsList})
     return updates
 
 
-def printNews(value):
-    print("========= [" + readableTime(value['datetime']) + "] =========")
-    print(value['source'] + ": " + value['headline'])
-    print(getFinalUrl(value['url']))
-    print("Tags: " + value['related'])
+def printNews(article):
+    print("========= [" + readableTime(article['datetime']) + "] =========")
+    print(article['source'] + ": " + article['headline'])
+    print(getFinalUrl(article['url']))
+    print("Tags: " + article['related'])
     print("")
 
 
 def printStoreNews(updates):
-
     # Print News List
     for article in updates:
         printNews(article)
