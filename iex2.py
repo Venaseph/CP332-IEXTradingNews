@@ -10,7 +10,7 @@ SYMBOLS_PATH = 'symbols.txt'
 APIGET_START = 'https://api.iextrading.com/1.0/stock/'
 APIGET_END = '/news/last/10'
 START_TIME = time.time()
-format = "%Y-%m-%dT%H:%M:%S"
+TIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 
 ## Global Non-Static
@@ -108,10 +108,8 @@ def printStoreNews(updates):
 
 def readableTime(ts):
     try:
-        # Create intake format
-        format = "%Y-%m-%dT%H:%M:%S"
         # Make strptime obj from string minus the crap at the end
-        strpTime = datetime.datetime.strptime(ts[:-6], format)
+        strpTime = datetime.datetime.strptime(ts[:-6], TIME_FORMAT)
         # Create string of the pieces I want from obj
         convertedTime = strpTime.strftime("%B %d %Y, %-I:%m %p")
         return convertedTime
