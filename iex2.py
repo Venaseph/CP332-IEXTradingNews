@@ -1,5 +1,4 @@
 # !/usr/bin/env python
-# source ~/.bash_profile
 import sys
 import urllib.request
 import json
@@ -24,7 +23,7 @@ def main():
         createSymbolList()
         updates = getUpdatedNews()
         # Only run if there are new articles
-        if updates is not None:
+        if updates:
             updates = sortArticles(updates)
             printStoreNews(updates)
         timer()
@@ -80,13 +79,16 @@ def getFinalUrl(url):
 def getUpdatedNews():
     global newsList
     # Set to none for no update handling
-    updates = None
+    updates = []
 
     for symbol in symbolList:      
         news = getApiJson(APIGET_START + symbol + APIGET_END)
         # Dumps articles that have yet to be printed into the updates list
-        updates = [article for article in news if article['url'] not in newsList]
-        # TODO shorten key / This updates the has been printed dic, went dic for speed
+        for article in news:
+            if article['url'] not in newsList:
+                updates.append(article)
+
+        # TODO shorten key / This updates the has been printed dic, went dic for speed and fun with comprehension instead of putting in the loop
         newsList.update({article['url']: None for article in news if article['url'] not in newsList})
     return updates
 
