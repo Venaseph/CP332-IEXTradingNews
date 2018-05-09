@@ -94,18 +94,14 @@ def getUpdatedNews():
     return updates
 
 
-def printNews(article):
-    print("========= [" + readableTime(article['datetime']) + "] =========")
-    print(article['source'] + ": " + article['headline'])
-    print(getFinalUrl(article['url']))
-    print("Tags: " + article['related'])
-    print("")
-
-
 def printStoreNews(updates):
     # Print News List
     for article in updates:
-        printNews(article)
+        print("========= [" + readableTime(article['datetime']) + "] =========")
+        print(article['source'] + ": " + article['headline'])
+        print(getFinalUrl(article['url']))
+        print("Tags: " + article['related'])
+        print("")
 
 
 def readableTime(ts):
