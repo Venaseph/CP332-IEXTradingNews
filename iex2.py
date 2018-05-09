@@ -31,8 +31,10 @@ def main():
 
 
 def sortArticles(updates):
+    # sort articles by their date time using a key value for speed/eff
     sortedUpdates = sorted(updates, key=lambda k: k['datetime']) 
     return sortedUpdates
+
 
 def createSymbolList():
     global symbolList
