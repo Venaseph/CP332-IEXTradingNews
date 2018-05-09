@@ -67,7 +67,9 @@ def getApiJson(url):
 def getFinalUrl(url):
     # You have to fake it to make it
     try:
+        # Create fake user agent for header
         user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+        # Make Request with header
         request = urllib.request.Request(url,headers={'User-Agent': user_agent})
         with urllib.request.urlopen(request) as response:
             # Grab landing URL
