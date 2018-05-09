@@ -65,12 +65,13 @@ def getApiJson(url):
         
 
 def getFinalUrl(url):
-    #short of installing a library to handle the headers, this is what I managed to come up with
+    # You have to fake it to make it
     try:
-        # Open URL as res
-        res = urllib.request.urlopen(url)
-        # Grab landing URL
-        finalUrl = res.geturl()
+        user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+        request = urllib.request.Request(url,headers={'User-Agent': user_agent})
+        with urllib.request.urlopen(request) as response:
+            # Grab landing URL
+            finalUrl = response.geturl()
         return finalUrl
     except Exception as ex:
         return "Link unavailable: " + str(ex)
