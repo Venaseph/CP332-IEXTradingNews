@@ -11,6 +11,7 @@ SYMBOLS_PATH = 'symbols.txt'
 APIGET_START = 'https://api.iextrading.com/1.0/stock/'
 APIGET_END = '/news/last/5'
 START_TIME = time.time()
+format = "%Y-%m-%dT%H:%M:%S"
 
 
 ## Global Non-Static
@@ -22,9 +23,15 @@ def main():
     while True:
         createSymbolList()
         updates = getUpdatedNews()
-        printStoreNews(updates)
+        if updates is not None:
+            updates = sortArticles(updates)
+            printStoreNews(updates)
         timer()
 
+
+def sortArticles(updates):
+    sortedUpdates = sorted(updates, key=lambda k: k['datetime']) 
+    return sortedUpdates
 
 def createSymbolList():
     global symbolList
@@ -67,12 +74,14 @@ def getFinalUrl(url):
 
 
 def getUpdatedNews():
-    updates = {}
+    global newsList
+    updates = None
     for symbol in symbolList:      
         news = getApiJson(APIGET_START + symbol + APIGET_END)
         # {key:val for val in collection}
         # TODO shorten key / If not already accounted for and conatins one of the tickers, add it
-        updates.update({article['url']: article for article in news if article['url'] not in newsList})
+        updates = [article for article in news if article['url'] not in newsList]
+        newsList.update({article['url']: None for article in news if article['url'] not in newsList})
     return updates
 
 
@@ -85,16 +94,10 @@ def printNews(value):
 
 
 def printStoreNews(updates):
-    # added in handling to reverse intake order on the news so it prints cronologically
-    reversedList = reverseNewsList(updates)
 
-    # Print reversed News List
-    for value in reversedList:
-        printNews(value)
-
-    # Store variables
-    for key, value in updates.items():
-        updateNewsList(key, value)
+    # Print News List
+    for article in updates:
+        printNews(article)
 
 
 def readableTime(ts):
@@ -110,26 +113,12 @@ def readableTime(ts):
         return "Datetime not available: " + str(ex)
 
 
-def reverseNewsList(updates):
-    reversedList = []
-    for key, value in updates.items():
-        #insert next at start of list
-        reversedList.insert(0, value)
-    return reversedList
-
-
 def timer():
     # To avoid drift after multiple iterations. Individual iteration may start slightly 
     # sooner or later depending on sleep(), timer() precision and how long it takes to execute 
     # the loop body but on average iterations always occur on the interval boundaries (even if some are skipped).
     time.sleep(30.0 - ((time.time() - START_TIME) % 30.0))
     # print("running now")        
-
-
-def updateNewsList(key, value):
-    global newsList
-    # Key is URL
-    newsList.update({key: value['headline']})
 
 
 if __name__ == "__main__":
